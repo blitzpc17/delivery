@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
-use App\Models\Rol;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use DB;
+
+use App\Models\Rol;
+
 
 
 class RolesController extends Controller
 {
     public function index(){
-
-        return view('Admin.sistema.catalogos.roles');
-
+        $user = Auth::user();
+        $rol = Rol::where('id', $user->rol_id)->first();
+        return view('Admin.sistema.catalogos.roles', compact('user', 'rol'));
     }
 
     public function save(Request $r){

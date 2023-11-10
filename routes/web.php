@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\UsuariosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,16 +19,21 @@ use App\Http\Controllers\RolesController;
 
 
 /* *** ADMIN *** */
-Route::prefix('admin')->group(function () {
+
+/* *** Acceso*** */
+Route::get('admin/login', function(){
+    return view('Admin.sistema.usuarios.login');
+})->name('admin.login');
+
+Route::post('admin/authin', [UsuariosController::class, 'authenticate'])->name('admin.auth');
+
+
+Route::prefix('admin')->middleware('auth')->group(function () {
 
     /* *** sistema *** */
-    Route::get('home', function(){
-        return view('Admin.sistema.home');
-    })->name('admin.home');
+    Route::get('home', [UsuariosController::class, 'home'])->name('admin.home');
 
-    Route::get('login', function(){
-        return view('Admin.sistema.usuarios.login');
-    })->name('admin.login');
+    Route::get('logauth', [UsuariosController::class, 'logauth'])->name('auth.logauth');
 
 
     /* *** Catálogos *** */
@@ -35,7 +41,7 @@ Route::prefix('admin')->group(function () {
         /* *** roles *** */
         Route::prefix('roles')->group(function (){
 
-            Route::get('index', [RolesController::class, 'index'] )->name('roles');
+            Route::get('/', [RolesController::class, 'index'] )->name('roles');
             Route::get('all', [RolesController::class, 'listar'])->name('roles.listar');
             Route::get('get',[RolesController::class, 'obtener'])->name('roles.obtener');
             Route::post('save', [RolesController::class, 'save'])->name('roles.save');
@@ -43,10 +49,7 @@ Route::prefix('admin')->group(function () {
     
         });
 
-
-        /* *** puestos *** */
-
-
+      
         /* *** modulos *** */
 
 
@@ -68,6 +71,9 @@ Route::prefix('admin')->group(function () {
     });
 
     /* *** proveedores *** */
+
+
+    /* *** productos *** */
 
 
 });

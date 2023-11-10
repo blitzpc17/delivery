@@ -10597,3 +10597,17 @@ div.code-toolbar > .toolbar span:hover {
   }
 }
 /**====== File Upload css end ======**/
+
+
+/** *** PERSONALIZACION CRAZY SOFTWARE*** **/
+
+/* *** Modificacion en la card de usuario *** */
+.flex-login{
+  display: flex;
+}
+
+.flex-user-data{
+  display: flex;
+  flex-direction: column;
+}
+

@@ -33,20 +33,37 @@
                             <img src="assets/images/user/lock.png" alt="lock images" class="img-fluid">
                         </div>
                         <div class="col-md-8 col-lg-6">
-                            <div class="card-body text-center">
-                                <div class="row justify-content-center">
-                                    <div class="col-sm-10">
-                                        <h3 class="mb-2">Bienvenido</h3>
-                                        <p>Iniciar sesión</p>
-                                        <div class="input-group mb-3">
-                                            <input type="email" class="form-control" placeholder="Correo electrónico">
+                            <div class="card-body text-center">                              
+                                    <form method="post" action="{{route('admin.auth')}}">
+                                        @csrf
+                                        <div class="row justify-content-center">
+                                            @error('unauthorizate')
+                                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                                  <strong>{{ $errors->first('unauthorizate') }}</strong> 
+                                                </div>
+                                            @enderror
+                                            <div class="col-sm-10">
+                                                <h3 class="mb-2">Bienvenido</h3>
+                                                <p>Iniciar sesión</p>
+                                                <div class="form-group mb-3">
+                                                    <input type="email" name="email" value="{{old('email')}}" class="form-control" placeholder="Correo electrónico">
+                                                    @error('email')
+                                                        <small class="form-text text-warning">{{ $errors->first('email') }}</small>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group mb-4">
+                                                    <input type="password" name="password" value="{{old('password')}}" class="form-control" placeholder="Contraseña">
+                                                    @error('password')
+                                                        <small class="form-text text-warning">{{ $errors->first('password') }}</small>
+                                                    @enderror
+                                                </div>
+                                                <button type="submit" class="btn btn-primary shadow-2 mb-4">Acceder</button>
+                                            </div>
                                         </div>
-                                        <div class="input-group mb-4">
-                                            <input type="password" class="form-control" placeholder="Contraseña">
-                                        </div>
-                                        <button class="btn btn-primary shadow-2 mb-4">Acceder</button>
-                                    </div>
-                                </div>
+                                    </form>  
                             </div>
                         </div>
                     </div>

@@ -2,11 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-use Laravel\Sanctum\Http\Controllers\{
-    NewAccessTokenController,
-    PersonalAccessTokenController,
-};
+use App\Http\Controllers\UsuariosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,5 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/token', [NewAccessTokenController::class, 'store']);
-Route::delete('/token/{token}', [PersonalAccessTokenController::class, 'destroy']);
+
+Route::post('register', [UsuariosController::class, 'singup']);

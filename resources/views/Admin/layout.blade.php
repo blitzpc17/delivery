@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <title>Delivery - @yield('title')</title>
+    <title>ITFOOD - @yield('title')</title>
     <!-- HTML5 Shim and Respond.js IE11 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 11]>
@@ -54,7 +54,7 @@
                     <div class="b-bg">
                         <i class="feather icon-shopping-cart"></i>
                     </div>
-                    <span class="b-title">Delivery</span>
+                    <span class="b-title">ITFOOD</span>
                 </a>
                 <a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
             </div>
@@ -331,12 +331,12 @@
     <!-- [ Header ] start -->
     <header class="navbar pcoded-header navbar-expand-lg navbar-light">
         <div class="m-header">
-            <a class="mobile-menu" id="mobile-collapse1" href="#!"><span></span></a>
+            <a class="mobile-menu" id="mobile-collapse1" href="#!"><span>ITFOOD</span></a>
             <a href="index.html" class="b-brand">
                    <div class="b-bg">
                        <i class="feather icon-trending-up"></i>
                    </div>
-                   <span class="b-title">Datta Able</span>
+                   <span class="b-title">ITFOOD</span>
                </a>
         </div>
         <a class="mobile-menu" id="mobile-header" href="#!">
@@ -428,16 +428,22 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right profile-notification">
                             <div class="pro-head">
-                                <img src="Admin/assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image">
-                                <span>John Doe</span>
-                                <a href="auth-signin.html" class="dud-logout" title="Logout">
-                                    <i class="feather icon-log-out"></i>
-                                </a>
+                                <div class="flex-login">
+                                    <img src="{{asset('Admin/assets/images/user/default.jpg')}}" class="img-radius" alt="{{$user->name}}">
+                                    <div class="flex-user-data">
+                                        <span>{{$user->name}}</span>
+                                        <span>{{$rol->nombre}}</span>
+                                    </div>                                   
+                                    <a href="{{route('auth.logauth')}}" class="dud-logout" title="Logout">
+                                        <i class="feather icon-log-out"></i>
+                                    </a>
+                                </div>
+                              
                             </div>
                             <ul class="pro-body">
                                 <li><a href="#!" class="dropdown-item"><i class="feather icon-settings"></i> Configuración</a></li>
                                 <li><a href="#!" class="dropdown-item"><i class="feather icon-user"></i> Perfil</a></li>
-                                <li><a href="auth-signin.html" class="dropdown-item"><i class="feather icon-lock"></i> Salir</a></li>
+                                <li><a href="{{route('auth.logauth')}}" class="dropdown-item"><i class="feather icon-lock"></i> Salir</a></li>
                             </ul>
                         </div>
                     </div>

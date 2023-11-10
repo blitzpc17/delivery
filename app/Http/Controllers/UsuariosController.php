@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Validator;
+use \stdClass;
+use Session;
+
 use App\Models\Persona;
 use App\Models\Cliente;
 use App\Models\Proveedor;
@@ -11,6 +16,7 @@ use App\Models\User;
 
 class UsuariosController extends Controller
 {
+    //Api
     public function singup(Request $r){
         try{
 
@@ -18,10 +24,16 @@ class UsuariosController extends Controller
                 return response()->json(["status"=>"422", "errors"=>["campo Tipo es obligatorio"]]);
             }
             $reglas = [
+                //persona
                 'nombres' => 'required|string|max:255',
                 'apellidos' => 'required|string|max:255',
                 'fechaNacimiento' => 'required|date',
                 'sexo' => 'required|string|size:1',
+                //user
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'password' => 'required|string|max:255|min:8',
+                'rolId' => 'required'
             ];
             
             $data = [];          
@@ -29,8 +41,7 @@ class UsuariosController extends Controller
             switch($r->tipo){
                 case "P":
                     $reglas_complemento = [
-                        'razonSocial' => 'required|string|max:255',
-                        'representanteId' => 'required|integer'
+                        'razonSocial' => 'required|string|max:255',                       
                     ];
                     $reglas = array_merge($reglas, $reglas_complemento);
 
@@ -85,6 +96,8 @@ class UsuariosController extends Controller
             );
 
             $result = User::create($dataUser);
+            $user = $result;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
             if($r->tipo == 'P'){
                 $data = array_merge($data, ["representante_id" => $personaId]);
@@ -94,26 +107,144 @@ class UsuariosController extends Controller
                 $result = Cliente::create($data);
             }
 
-            return response()->json(["status" => 200, "msj"=> "ok"]);
+            return response()->json(["status" => 200, "msj"=> "ok", "data" => ["user"=>$user, "acces_token"=>$token, "token_type"=>"Bearer"]]);
 
 
         }catch(Exception $ex){
             Log::error('Error en la clase ' . __CLASS__ . ' en la línea ' . __LINE__ . ': ' . $ex->getMessage());
             return response()->json(["status"=>500, "msj" => "error en save"]);
         }
+    }  
+    
+
+    public function authenticatApi(){
+
+        $reglas = [             
+            'email' => 'required|email|max:255',
+            'password' => 'required|string|max:255|min:8'               
+        ];
+
+        $validador = Validator::make($r->all(), $reglas);
+
+        if($validador->fails()){
+            return response()->json(["status" => 422, 'errors'=>$validador->errors()]); //cambiar este por un return back
+        }
+
+        if(Auth::attempt(['email' => $r->email, 'password' => $r->password])){
+
+              $user  = User::where('email', $r->email)->first();
+              $token = $user->createToken('auth_token')->plainTextToken;
+              
+              return response()->json(['status'=>200, 'msj'=>'willkommen', 'data'=>['user'=>$user, 'accesToken'=>$token, 'token_type'=>'Bearer']]);
+        }
+
+
+        return response()->json(["status" => 401, 'msj'=>"Unauthorized" ]); 
+    }
+   
+
+    //sistema
+    public function authenticate(Request $r){
+
+        try{
+            $reglas = [             
+                'email' => 'required|email|max:255',
+                'password' => 'required|string|max:255|min:8'               
+            ];
+
+            $validador = Validator::make($r->all(), $reglas);
+
+            if($validador->fails()){
+                return back()->withErrors($validador)->withInput();
+            }
+
+            if(Auth::attempt(['email' => $r->email, 'password' => $r->password])){
+
+                $r->session()->regenerate(); 
+                return redirect()->intended('admin/home');
+               
+            }           
+
+            return back()->withErrors([
+                'unauthorizate' => 'Los datos ingresados no coinciden con nuestros registros.',
+            ])->onlyInput('email');
+
+
+        }catch(Exception $ex){
+            Log::error('Error en la clase ' . __CLASS__ . ' en la línea ' . __LINE__ . ': ' . $ex->getMessage());
+            return response()->json(["status"=>500, "msj" => "error en save"]);
+        }
+
     }
 
-    public function index(){
-        return view('Admin.sistema.usuarios.usuarios_sistema');
+    public function logauth(Request $r){        
+        Auth::logout();
+        Session::flush();
+        return redirect()->route('admin.login');
     }
 
     public function save(Request $r){
+        try{
+            $reglas = [
+                //persona
+                'nombres' => 'required|string|max:255',
+                'apellidos' => 'required|string|max:255',
+                'fechaNacimiento' => 'required|date',
+                'sexo' => 'required|string|size:1',
+                //user
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'password' => 'required|string|max:255|min:8',
+                'rolId' => 'required'
+            ];
 
-    }  
+            $validador = Validator::make($r->all(), $reglas);
+
+            if($validador->fails()){
+                return response()->json(["status" => 422, 'errors'=>$validador->errors()]);
+            }
+
+            $dataPersona = array(
+                "nombres" => $r->nombres,
+                "apellidos" => $r->apellidos,
+                "fecha_nacimiento" => $r->fechaNacimiento,
+                "sexo" => $r->sexo                
+            );
+            $result = Persona::create($dataPersona);
+
+            $personaId = $result->id;
+
+            $dataUser = array(
+                "name" => $r->name,
+                "email" => $r->email,
+                "password" => bcrypt($r->password),
+                "personas_id" => $result->id,
+                "rol_id" => $r->rolId
+            );
+
+            User::create($dataUser);
+
+            return response()->json(["status" => 200, "msj"=> "ok"]);
+
+        }catch(Exception $ex){
+            Log::error('Error en la clase ' . __CLASS__ . ' en la línea ' . __LINE__ . ': ' . $ex->getMessage());
+            return response()->json(["status"=>500, "msj" => "error en save"]);
+        }
+    } 
+    
+    public function home(Request $r){
+        $user = Auth::user();
+        $rol = Rol::where('id', $user->rol_id)->first();;
+        return view('Admin.sistema.home', compact('user', 'rol'));
+    }
 
 
-    public function authenticate(){
+    public function gestionUsuariosSistema(){
+        return view('Admin.sistema.usuarios.usuarios_sistema');
+    }
 
+    public function gestionUsuariosApp(){
+        return view('Admin.sistema.usuarios.usuarios_app');
     }
 
 
