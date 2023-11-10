@@ -13,9 +13,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="description" content="Datta Able Bootstrap admin template made using Bootstrap 4 and it has huge amount of ready made feature, UI components, pages which completely fulfills any dashboard needs." />
-    <meta name="keywords" content="admin templates, bootstrap admin templates, bootstrap 4, dashboard, dashboard templets, sass admin templets, html admin templates, responsive, bootstrap admin templates free download,premium bootstrap admin templates, datta able, datta able bootstrap admin template">
-    <meta name="author" content="Codedthemes" />
+    <meta name="description" content="Aplicación de delivery." />
+    <meta name="keywords" content="app delivery">
+    <meta name="author" content="crazysoftware" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon icon -->
     <link rel="icon" href="{{asset('Admin/assets/images/favicon.ico')}}" type="image/x-icon">
@@ -715,6 +716,19 @@
     <!-- datatable Js -->
     <script src="{{asset('Admin/assets/plugins/data-tables/js/datatables.min.js')}}"></script>
     <script src="{{asset('Admin/assets/js/pages/tbl-datatable-custom.js')}}"></script>
+
+     <!-- sweet alert Js -->
+    <script src="{{asset('Admin/assets/plugins/sweetalert/js/sweetalert.min.js')}}"></script>
+    <script src="{{asset('Admin/assets/js/pages/ac-alert.js')}}"></script>
+
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
 
     @stack('js')
 

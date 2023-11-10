@@ -32,7 +32,10 @@ Route::prefix('admin')->group(function () {
         Route::prefix('roles')->group(function (){
 
             Route::get('index', [RolesController::class, 'index'] )->name('roles');
-    
+            Route::get('all', [RolesController::class, 'listar'])->name('roles.listar');
+            Route::get('get',[RolesController::class, 'obtener'])->name('roles.obtener');
+            Route::post('save', [RolesController::class, 'save'])->name('roles.save');
+            Route::post('del', [RolesController::class, 'delete'])->name('roles.del');
     
         });
 
