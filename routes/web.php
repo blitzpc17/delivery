@@ -25,6 +25,10 @@ Route::prefix('admin')->group(function () {
         return view('Admin.sistema.home');
     })->name('admin.home');
 
+    Route::get('login', function(){
+        return view('Admin.sistema.usuarios.login');
+    })->name('admin.login');
+
 
     /* *** Catálogos *** */
 

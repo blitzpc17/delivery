@@ -103,9 +103,13 @@ class UsuariosController extends Controller
         }
     }
 
-    public function login(){
-
+    public function index(){
+        return view('Admin.sistema.usuarios.usuarios_sistema');
     }
+
+    public function save(Request $r){
+
+    }  
 
 
     public function authenticate(){
