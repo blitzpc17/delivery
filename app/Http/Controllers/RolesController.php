@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use DB;
 
+use App\Models\Modulo;
 use App\Models\Rol;
 
 
@@ -16,7 +17,8 @@ class RolesController extends Controller
     public function index(){
         $user = Auth::user();
         $rol = Rol::where('id', $user->rol_id)->first();
-        return view('Admin.sistema.catalogos.roles', compact('user', 'rol'));
+        $menu = Modulo::GenerarMenu($rol->id);
+        return view('Admin.sistema.catalogos.roles', compact('user', 'rol', 'menu'));
     }
 
     public function save(Request $r){
@@ -63,7 +65,13 @@ class RolesController extends Controller
             Log::error('Error en la clase ' . __CLASS__ . ' en la línea ' . __LINE__ . ': ' . $ex->getMessage());       
             return response()->json(["status"=>500, "msj" => "error en delete"]);
         }
-        
+    }
+
+
+    public function ListarRolesSelect(Request $r){
+        return DB::table('roles')
+                ->select('id', 'nombre as text')
+                ->get();
 
     }
 }

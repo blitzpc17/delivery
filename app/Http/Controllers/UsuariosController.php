@@ -13,6 +13,7 @@ use App\Models\Cliente;
 use App\Models\Proveedor;
 use App\Models\Rol;
 use App\Models\User;
+use App\Models\Modulo;
 
 class UsuariosController extends Controller
 {
@@ -141,6 +142,10 @@ class UsuariosController extends Controller
 
         return response()->json(["status" => 401, 'msj'=>"Unauthorized" ]); 
     }
+
+    public function modificarPerfilApi(){
+        
+    }
    
 
     //sistema
@@ -161,6 +166,7 @@ class UsuariosController extends Controller
             if(Auth::attempt(['email' => $r->email, 'password' => $r->password])){
 
                 $r->session()->regenerate(); 
+              
                 return redirect()->intended('admin/home');
                
             }           
@@ -210,19 +216,27 @@ class UsuariosController extends Controller
                 "fecha_nacimiento" => $r->fechaNacimiento,
                 "sexo" => $r->sexo                
             );
-            $result = Persona::create($dataPersona);
-
-            $personaId = $result->id;
 
             $dataUser = array(
                 "name" => $r->name,
                 "email" => $r->email,
                 "password" => bcrypt($r->password),
-                "personas_id" => $result->id,
+               // "personas_id" => $result->id,
                 "rol_id" => $r->rolId
             );
 
-            User::create($dataUser);
+            if($r->id==null){
+                
+                $result = Persona::create($dataPersona);    
+                $personaId = $result->id;  
+                $dataUser = array_merge($dataUser, ["personas_id"=> $personaId]);
+                User::create($dataUser);
+
+            }else{
+                
+                User::where(id, $r->id)->update($dataUser);
+                Persona::where(id, $r->personaId)->update($dataPersona);
+            }         
 
             return response()->json(["status" => 200, "msj"=> "ok"]);
 
@@ -234,8 +248,9 @@ class UsuariosController extends Controller
     
     public function home(Request $r){
         $user = Auth::user();
-        $rol = Rol::where('id', $user->rol_id)->first();;
-        return view('Admin.sistema.home', compact('user', 'rol'));
+        $rol = Rol::where('id', $user->rol_id)->first();
+        $menu = Modulo::GenerarMenu($rol->id);
+        return view('Admin.sistema.home', compact('user', 'rol', 'menu'));
     }
 
 

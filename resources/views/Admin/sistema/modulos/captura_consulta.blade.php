@@ -1,7 +1,7 @@
 @extends('Admin.layout')
 
 
-@section('title', 'Catálogos - Roles')
+@section('title', 'Sistema - Módulos')
 
 
 @push('css')
@@ -9,13 +9,14 @@
 @endpush
 
 
-    @section('nombreSeccion', 'Catálogos - Roles')
+    @section('nombreSeccion', 'Sistema - Módulos')
 
     @section('bread')
 
         <li class="breadcrumb-item"><a href="{{route('admin.home')}}"><i class="feather icon-home"></i></a></li>
-        <li class="breadcrumb-item"><a href="#!">Cátalogos</a></li>
-        <li class="breadcrumb-item"><a href="#!">Roles</a></li>
+        <li class="breadcrumb-item"><a href="#!">Sistema</a></li>
+        <li class="breadcrumb-item"><a href="#!">Ménu</a></li>
+        <li class="breadcrumb-item"><a href="#!">Módulos</a></li>
         
     @endsection
 
@@ -30,7 +31,7 @@
                 <div class="card">
 
                     <div class="card-header">
-                        <h5>Roles</h5>
+                        <h5>Módulos</h5>
                     </div>
                     <div class="card-block">
 
@@ -82,11 +83,27 @@
 
                                 <div class="form-group">
                                     <label for="nombre"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Nombre:</font></font></label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ej. master">
-                                    <small id="nombre_err" class="form-text text-muted"><font style="vertical-align: inherit;">
-                                        <font style="vertical-align: inherit;"></font>alerta</font>
-                                    </small>
-                                </div>                       
+                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="">
+                                    <small id="nombre_err" class="form-text text-warning">_err</small>
+                                </div>  
+                                
+                                <div class="form-group">
+                                    <label for="ruta"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Ruta:</font></font></label>
+                                    <input type="text" class="form-control" id="ruta" name="ruta" placeholder="">
+                                    <small id="ruta_err" class="form-text text-warning">_err</small>
+                                </div>     
+
+                                <div class="form-group">
+                                    <label for="moduloId"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Modulo padre:</font></font></label>
+                                    <select class="form-control" id="moduloId" name="moduloId"></select>
+                                    <small id="moduloId_err" class="form-text text-warning">_err</small>
+                                </div>  
+                                
+                                <div class="form-group">
+                                    <label for="icono"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Icono:</font></font></label>
+                                    <input type="text" class="form-control" id="icono" name="icono" placeholder="">
+                                    <small id="icono_err" class="form-text text-warning">_err</small>
+                                </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -114,6 +131,8 @@
         console.log('Ready!')
 
         listar();
+        LimpiarValidaciones();
+        ListarModulos();
 
 
         $('#frm-registro').on('submit', function(e){
@@ -139,12 +158,14 @@
     function ver(id){
         $.ajax({
             type: "get",
-            url: "{{route('roles.obtener')}}",
+            url: "{{route('modulos.obtener')}}",
             data: {id:id},
             dataType: "json",
             success: function (res) {
-
+                $('#icono').val(res.icono);
                 $('#nombre').val(res.nombre);
+                $('#ruta').val(res.ruta);
+                $('#moduloId').val(res.modulo_padre_id);
                 $('#id').val(res.id)
 
                 $('.modal-title').text('Modificar registro')
@@ -157,7 +178,7 @@
     function listar(){
         $.ajax({
             type: "get",
-            url: "{{route('roles.listar')}}",
+            url: "{{route('modulos.listar')}}",
             success: function (res) {
                 dibujarData(res)
             }
@@ -175,7 +196,7 @@
                             <td>${val.nombre}</td>
                             <td>
                                 <button class="btn btn-icon btn-warning" onclick="ver(${val.id})"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-icon btn-danger" onclick="eliminar(${val.id})"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-icon ${val.baja?"btn-secondary":"btn-danger"}" onclick="eliminar(${val.id}, ${val.baja?0:1})"><i class="${val.baja?"feather icon-thumbs-up":"feather icon-thumbs-down"}"></i></button>
                             </td>
                         </tr>`
              $('#tb-registros tbody').append(row);
@@ -190,7 +211,7 @@
     function save(form){
         $.ajax({
                 method: "POST",
-                url: "{{route('roles.save')}}",
+                url: "{{route('modulos.save')}}",
                 data: form,
                 contentType: false,
                 cache:false,
@@ -214,6 +235,7 @@
                         tipo = "warning";
                         titulo = "¡Advertencia!"
                         msj = "Verifica tu información e intentalo nuevamente."
+                        
                     }
 
                     swal({
@@ -221,8 +243,16 @@
                             title: titulo,
                             text: msj,
                         }).then(()=>{
-                            $('#md-registro').modal('toggle')
-                            reiniciar();
+                            console.log("dentro: "+res.status)
+                            if(res.status === 200){
+                                $('#md-registro').modal('toggle')
+                                reiniciar();
+                            }else if(res.status === 422){
+                                $.each(res.errors, function (i, val) { 
+                                     setError(i, val);
+                                });
+                            }
+                          
                         });
                     
                 }
@@ -230,20 +260,21 @@
 
     }
 
-    function eliminar(id){
+    function eliminar(id, edo){
         let data = null;
         swal({
             icon:"warning",
             title:"Advertencia",
-            text:"¿Desea eliminar el registro?",
+            text:"¿Desea "+(edo==1?"DESACTIVAR":"ACTIVAR")+" el registro?",
             buttons: true
         }).then((value)=>{
             if(!value)return;
             var formData = new FormData();
             formData.append('id',id);
+            formData.append('baja',edo);
             $.ajax({
                 method: "POST",
-                url: "{{route('roles.del')}}",
+                url: "{{route('modulos.del')}}",
                 data: formData,
                 contentType: false,
                 cache:false,
@@ -257,7 +288,7 @@
                     if(res.status === 200){
                         tipo = "success";
                         titulo = "¡Exito!"
-                        msj = "Registro eliminado correctamente."
+                        msj = "Registro "+(edo==1?"DESACTIVADO":"ACTIVADO")+" correctamente."
                     }else if(res.status === 500){
                         tipo = "error";
                         titulo = "¡Oh no!"
@@ -283,13 +314,47 @@
     }
 
     function limpiar(){
+        $('#icono').val(null)
         $('#nombre').val(null)
+        $('#ruta').val(null)
+        $('#moduloId').val(null)
         $('#id').val(null)        
+    }
+
+    function LimpiarValidaciones(){
+        $('small').text('')
     }
 
     function reiniciar(){        
         limpiar();
         listar();
+        LimpiarValidaciones();
+        ListarModulos();
+    }
+
+    function setError(ctrlname, msj){
+        $('#'+ctrlname+'_err').text(msj)
+    }
+
+    function ListarModulos(){
+        $('#moduloId').val('-1')
+        $('#moduloId').select2({
+        placeholder: {id: '-1', text: 'Seleccionar opción'},
+        allowClear: true,
+        width: 'resolve',
+        dropdownParent: $("#md-registro"),
+        ajax: {
+            url:  "{{route('modulos.select.listar')}}",
+            dataType: 'json',
+            data: function (params) {
+                return {p: $.trim(params.term)};
+            },
+            processResults: function (data) {
+                return {results: data};
+            },
+            cache: true
+        },
+    });
     }
 
 

@@ -19,5 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+//usuarios api
 Route::post('register', [UsuariosController::class, 'singup']);
+//usuarios sistema
+Route::post('us/save', [UsuariosController::class, 'save']);
