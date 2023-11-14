@@ -9,6 +9,7 @@ use App\Http\Controllers\ModulosController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\EstadoVentaController;
 use App\Http\Controllers\EstadoProductosController;
+use App\Http\Controllers\ProductoCategoriasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
             Route::post('save', [EstadoProductosController::class, 'save'])->name('edopro.save');
             Route::post('del', [EstadoProductosController::class, 'delete'])->name('edopro.del');
             Route::get('select', [EstadoProductosController::class, 'ListarEstadosProductoSelect'])->name('edopro.select.listar');    
+        });
+
+         /* *** categorias productos *** */
+         Route::prefix('catpro')->group(function (){
+
+            Route::get('/', [ProductoCategoriasController::class, 'index'] )->name('catpro');
+            Route::get('all', [ProductoCategoriasController::class, 'listar'])->name('catpro.listar');
+            Route::get('get',[ProductoCategoriasController::class, 'obtener'])->name('catpro.obtener');
+            Route::post('save', [ProductoCategoriasController::class, 'save'])->name('catpro.save');
+            Route::post('del', [ProductoCategoriasController::class, 'delete'])->name('catpro.del');
+            Route::get('select', [ProductoCategoriasController::class, 'ListarCategoriasProductoSelect'])->name('catpro.select.listar');    
         });
 
       
