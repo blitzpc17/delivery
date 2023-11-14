@@ -10,6 +10,7 @@ use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\EstadoVentaController;
 use App\Http\Controllers\EstadoProductosController;
 use App\Http\Controllers\ProductoCategoriasController;
+use App\Http\Controllers\ProductosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +131,16 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
 
     /* *** productos *** */
+
+    Route::prefix('productos')->group(function (){
+        Route::get('/', [ProductosController::class, 'index'] )->name('productos');
+        Route::get('all', [ProductosController::class, 'listar'])->name('productos.listar');
+        Route::get('get',[ProductosController::class, 'obtener'])->name('productos.obtener');
+        Route::get('all/prov', [ProductosController::class, 'listarProductosProveedorId'])->name('productos.prov.listar');
+        Route::get('get/prov',[ProductosController::class, 'obtenerXProveedorEid'])->name('productos.prov.obtener');
+        Route::post('save', [ProductosController::class, 'save'])->name('productos.save');
+    });
+
 
 
     /* *** ventas *** */

@@ -72,7 +72,7 @@
                             <a href="#!" class="nav-link"><span class="pcoded-micon"><i class="{{$p->icono}}"></i></span><span class="pcoded-mtext">{{$p->nombre}}</span></a>
                             <ul class="pcoded-submenu">
                                 @foreach ($menu["primerNivel"] as $h )
-                                    @if($h->ruta==null)
+                                    @if($h->ruta==null && $h->modulo_padre_id==$p->id)
                                     <li class="pcoded-hasmenu"><a href="#!" class="">{{$h->nombre}}</a>
                                         <ul class="pcoded-submenu">
                                             @foreach ($menu["hijos"] as $ch)
@@ -82,12 +82,8 @@
                                             @endforeach
                                         </ul>
                                     </li>     
-                                    @else
-                                        <li class="nav-item">
-                                            <a href="{{url('/')}}{{$h->ruta}}" class="nav-link">
-                                                <span class="pcoded-micon"><i class="{{$h->icono}}"></i></span>
-                                                <span class="pcoded-mtext">{{$h->nombre}}</span></a>
-                                        </li>
+                                    @elseif($h->modulo_padre_id==$p->id)
+                                        <li class><a href="{{url('/')}}{{$h->ruta}}" class="">{{$h->nombre}}</a>
                                     @endif
                                 @endforeach
                             </ul>   
