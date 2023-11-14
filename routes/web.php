@@ -8,6 +8,7 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ModulosController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\EstadoVentaController;
+use App\Http\Controllers\EstadoProductosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,8 +54,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     
         });
 
-           /* *** estados ventas *** */
-           Route::prefix('edovta')->group(function (){
+        /* *** estados ventas *** */
+        Route::prefix('edovta')->group(function (){
 
             Route::get('/', [EstadoVentaController::class, 'index'] )->name('edovta');
             Route::get('all', [EstadoVentaController::class, 'listar'])->name('edovta.listar');
@@ -62,6 +63,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
             Route::post('save', [EstadoVentaController::class, 'save'])->name('edovta.save');
             Route::post('del', [EstadoVentaController::class, 'delete'])->name('edovta.del');
             Route::get('select', [EstadoVentaController::class, 'ListarRolesSelect'])->name('edovta.select.listar');    
+        });
+
+        /* *** estados productos *** */
+        Route::prefix('edopro')->group(function (){
+
+            Route::get('/', [EstadoProductosController::class, 'index'] )->name('edopro');
+            Route::get('all', [EstadoProductosController::class, 'listar'])->name('edopro.listar');
+            Route::get('get',[EstadoProductosController::class, 'obtener'])->name('edopro.obtener');
+            Route::post('save', [EstadoProductosController::class, 'save'])->name('edopro.save');
+            Route::post('del', [EstadoProductosController::class, 'delete'])->name('edopro.del');
+            Route::get('select', [EstadoProductosController::class, 'ListarEstadosProductoSelect'])->name('edopro.select.listar');    
         });
 
       
