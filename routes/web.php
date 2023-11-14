@@ -7,6 +7,7 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ModulosController;
 use App\Http\Controllers\PermisosController;
+use App\Http\Controllers\EstadoVentaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
             Route::post('del', [RolesController::class, 'delete'])->name('roles.del');
             Route::get('select', [RolesController::class, 'ListarRolesSelect'])->name('roles.select.listar');
     
+        });
+
+           /* *** estados ventas *** */
+           Route::prefix('edovta')->group(function (){
+
+            Route::get('/', [EstadoVentaController::class, 'index'] )->name('edovta');
+            Route::get('all', [EstadoVentaController::class, 'listar'])->name('edovta.listar');
+            Route::get('get',[EstadoVentaController::class, 'obtener'])->name('edovta.obtener');
+            Route::post('save', [EstadoVentaController::class, 'save'])->name('edovta.save');
+            Route::post('del', [EstadoVentaController::class, 'delete'])->name('edovta.del');
+            Route::get('select', [EstadoVentaController::class, 'ListarRolesSelect'])->name('edovta.select.listar');    
         });
 
       
