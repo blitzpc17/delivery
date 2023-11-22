@@ -14,6 +14,7 @@ use App\Models\Proveedor;
 use App\Models\ProductoCategoria;
 use App\Models\ProductoEstado;
 use App\Models\Producto;
+use App\Models\Cliente;
 
 class ProductosController extends Controller
 {
@@ -132,5 +133,54 @@ class ProductosController extends Controller
     public function obtenerXProveedorEid(Request $r){
         return Producto::where('id', $r->id)->where('proveedor_id', $r->proveedorId)->first();
     }
+
+
+    public function listarProductos(Request $r){
+        if($r->categoria==null && $r->proveedor == null){
+            //todos
+            return Producto::all();
+        }else if($r->categoria!=null && $r->proveedor == null){
+            //solo por categoria
+            return Producto::where('producto_categorias_id', $r->categoria)->get();
+        }else if($r->categoria!=null && $r->proveedor!=null){
+            //por categoria y proveedor
+            return Producto::where('producto_categorias_id', $r->categoria)->where('proveedor_id', $r->proveedor)->get();
+        }else if($r->categoria==null && $r->proveedor!=null){
+            //solo por proveedor
+            return Producto::where('proveedor_id', $r->proveedor)->get();
+        }
+
+    }
+
+    public function busquedaProductos(Request $r){
+        if($r->termino ==null){
+            return response()->json(["status" => 402, "errors"=>["busqueda"=>["No se agrego término a la b´squeda."]]]);
+        }else if($r->categoria!=null && $r->proveedor==null){
+            //solo por categoria y termino
+            return Producto::where('termino', 'like', "%".$r->termino."%" )->where('producto_categorias_id', $r->categoria)->get();
+        }else if($r->categoria!=null && $r->proveedor!=null){
+            //por categoria, proveedor y termino
+            return Producto::where('termino', 'like', "%".$r->termino."%" )->where('proveedor_id', $r->proveedor)->where('producto_categorias_id', $r->categoria)->get();
+        }
+
+    }
+
+
+    public function Productos(Request $r){
+
+        $user = Auth::user();
+        $dataCli = Cliente::ObtenerDataCliente($user->id);  
+        $productos = null;
+
+        if($r->categoria==null&& $r->termino==null){
+            $productos = Producto::where('estado_id', '<>', 3)->get();
+        }else if($r->categoria!=null&& $r->termino==null){
+            $productos = Producto::where('producto_categorias_id', $r->categoria)->get();
+        }
+
+        return view('Delivery.Pages.productos', compact('user', 'dataCli', 'productos'));
+    }
+
+
 
 }

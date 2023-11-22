@@ -30,7 +30,7 @@
                 <div class="card">
 
                     <div class="card-header">
-                        <h5>Estados de productos</h5>
+                        <h5>Categorias productos</h5>
                     </div>
                     <div class="card-block">
 
@@ -44,6 +44,8 @@
                                     <tr>
                                         <td>#</td>
                                         <td>Nombre</td>
+                                        <td>Estado</td>
+                                        <td>Imagen</td>
                                         <td>Acciones</td>
                                     </tr>
                                 </thead>
@@ -76,7 +78,7 @@
                             </div>
                     <div class="modal-body">
                         <div class="container-fluid">
-                            <form id="frm-registro">
+                            <form id="frm-registro" enctype="multipart/form-data">
                                
                                 <input type="hidden" name="id" id="id">
 
@@ -86,7 +88,19 @@
                                     <small id="nombre_err" class="form-text text-muted"><font style="vertical-align: inherit;">
                                         <font style="vertical-align: inherit;"></font>alerta</font>
                                     </small>
-                                </div>                       
+                                </div>
+                                
+                                 <!-- file manager-->
+                                 <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                                    </div>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="image" name="image">
+                                        <label class="custom-file-label" for="image">Elije un archivo</label>
+                                    </div>
+                                </div>
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -173,9 +187,11 @@
             const row = `<tr>
                             <td>${i+1}</td>
                             <td>${val.nombre}</td>
+                            <td>${val.baja==0||val.baja==null?"ACTIVO":"INACTIVO"}</td>
+                            <td><img style="width:100px; height:85px;" src="{{asset('Delivery/assets/images/categorias')}}/${val.imagen}" /></td>
                             <td>
                                 <button class="btn btn-icon btn-warning" onclick="ver(${val.id})"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-icon btn-danger" onclick="eliminar(${val.id})"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-icon ${val.baja==1?'btn-primary': 'btn-danger'}" onclick="eliminar(${val.id}, ${val.baja==1?0:1})"><i class="fas ${val.baja==1?'fa-thumbs-up': 'fas fa-thumbs-down'}"></i></button>
                             </td>
                         </tr>`
              $('#tb-registros tbody').append(row);
@@ -230,17 +246,18 @@
 
     }
 
-    function eliminar(id){
+    function eliminar(id, baja){
         let data = null;
         swal({
             icon:"warning",
             title:"Advertencia",
-            text:"¿Desea eliminar el registro?",
+            text:"¿Desea "+(baja==1?"DESACTIVAR":"ACTIVAR")+" el registro?",
             buttons: true
         }).then((value)=>{
             if(!value)return;
             var formData = new FormData();
             formData.append('id',id);
+            formData.append('baja', baja)
             $.ajax({
                 method: "POST",
                 url: "{{route('catpro.del')}}",
@@ -257,7 +274,7 @@
                     if(res.status === 200){
                         tipo = "success";
                         titulo = "¡Exito!"
-                        msj = "Registro eliminado correctamente."
+                        msj = "Registro "+(baja==1?"DESACTIVADO":"ACTIVADO")+" correctamente."
                     }else if(res.status === 500){
                         tipo = "error";
                         titulo = "¡Oh no!"

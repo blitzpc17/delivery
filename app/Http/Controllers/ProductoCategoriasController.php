@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use DB;
 
 use App\Models\Modulo;
@@ -28,11 +29,26 @@ class ProductoCategoriasController extends Controller
 
             if($validador->fails()){
                 return response()->json(["status" => 422, 'errors'=>$validador->errors()]);
-            }
+            }                
+
+            $imagen = $r->file('image');
+            $nombreArchivo = null;
+            if($imagen!=null){
+                $ruta = "Delivery/assets/images/categorias/";
+                if(!Storage::exists($ruta)){
+                    Storage::makeDirectory($ruta, 0755, true);
+                }
+                $nombreArchivo = rand() . '.' . $imagen->getClientOriginalExtension();    
+                $imagen->move(public_path($ruta), $nombreArchivo);
+            }else{
+                $imagen = null;
+                $nombreArchivo = "default.png";
+            }  
 
             $data = array(
-                'nombre' => $r->nombre
-            );          
+                'nombre' => $r->nombre,
+                'imagen' => $nombreArchivo
+            );  
 
             if($r->id==null){
                ProductoCategoria::create($data);
@@ -58,7 +74,7 @@ class ProductoCategoriasController extends Controller
 
     public function delete(Request $r){
         try{
-            ProductoCategoria::where('id', $r->id)->delete();
+            ProductoCategoria::where('id', $r->id)->update(["baja" => $r->baja]);
             return response()->json(["status"=>200, "msj"=>"success"]);
         }catch (QueryException $ex) {
             Log::error('Error en la clase ' . __CLASS__ . ' en la línea ' . __LINE__ . ': ' . $ex->getMessage());       
@@ -73,4 +89,10 @@ class ProductoCategoriasController extends Controller
                 ->get();
 
     }
+
+    public function listarCategoriasActivas(){
+        return ProductoCategoria::where('baja', 0)->orWhereNull('baja')->get();
+    }
+
+
 }

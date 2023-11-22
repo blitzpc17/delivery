@@ -119,13 +119,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         /* *** venta estados *** */
 
 
-    /* *** clientes *** */
-    Route::prefix('clientes')->group(function (){
-
-        Route::get('index', [ClientesController::class, 'index'] )->name('clientes');
-
-
-    });
+    
 
     /* *** proveedores *** */
 
@@ -145,6 +139,36 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     /* *** ventas *** */
 
+    //panel de pedidos
+
+
+    
+
+
+});
+
+
+/* *** clientes *** */
+
+
+
+
+
+
+Route::get('customer/login', [ClientesController::class, 'login'] )->name('login');
+Route::get('customer/register', [ClientesController::class, 'register'] )->name('register');  
+Route::post('customer/save', [UsuariosController::class, 'singup'] )->name('singup');
+Route::post('customer/authin', [UsuariosController::class, 'authenticate'])->name('auth');
+
+    
+Route::prefix('customer')->middleware('auth')->group(function () {
+
+    Route::get('/', [ClientesController::class, 'index'] )->name('home');
+    Route::get('productos', [ProductosController::class, 'Productos'] )->name('productos');
+    Route::get('cart', [ClientesController::class, 'index'] )->name('cart');
+    Route::get('checkout', [ClientesController::class, 'index'] )->name('checkout');   
+    Route::get('pedidos', [ClientesController::class, 'index'] )->name('pedidos');
+    Route::get('categorias', [ProductoCategoriasController::class, 'listarCategoriasActivas'])->name('categorias');
 
 });
 
@@ -152,3 +176,23 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
 
 /* ** Delivery*** */
+
+// *** clientes ***
+
+//inicio
+
+
+//categorias
+
+
+//proveedores
+
+
+//carrito
+
+
+//generar pedido
+
+
+
+

@@ -104,7 +104,7 @@ class UsuariosController extends Controller
                 $data = array_merge($data, ["representante_id" => $personaId]);
                 $result = Proveedor::create($data);
             }else{
-                $data = array_merge($data, ["personas_id"=>$personasId]);
+                $data = array_merge($data, ["personas_id"=>$personaId]);
                 $result = Cliente::create($data);
             }
 
@@ -166,7 +166,10 @@ class UsuariosController extends Controller
             if(Auth::attempt(['email' => $r->email, 'password' => $r->password])){
 
                 $r->session()->regenerate(); 
-              
+                $user = User::where('email', $r->email)->first();
+                if($user->roles_id==3){
+                    return redirect()->route('home');
+                }
                 return redirect()->intended('admin/home');
                
             }           
