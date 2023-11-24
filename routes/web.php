@@ -11,6 +11,7 @@ use App\Http\Controllers\EstadoVentaController;
 use App\Http\Controllers\EstadoProductosController;
 use App\Http\Controllers\ProductoCategoriasController;
 use App\Http\Controllers\ProductosController;
+use App\Http\Controllers\PedidosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -160,15 +161,28 @@ Route::get('customer/register', [ClientesController::class, 'register'] )->name(
 Route::post('customer/save', [UsuariosController::class, 'singup'] )->name('singup');
 Route::post('customer/authin', [UsuariosController::class, 'authenticate'])->name('auth');
 
+
+
     
 Route::prefix('customer')->middleware('auth')->group(function () {
 
+    Route::get('logauth', [UsuariosController::class, 'logauth'])->name('logauth');
     Route::get('/', [ClientesController::class, 'index'] )->name('home');
     Route::get('productos', [ProductosController::class, 'Productos'] )->name('productos');
-    Route::get('cart', [ClientesController::class, 'index'] )->name('cart');
-    Route::get('checkout', [ClientesController::class, 'index'] )->name('checkout');   
-    Route::get('pedidos', [ClientesController::class, 'index'] )->name('pedidos');
+    Route::get('cart', [ClientesController::class, 'cart'] )->name('cart');
+    Route::get('checkout', [PedidosController::class, 'checkout'] )->name('checkout');   
+    Route::get('pedidos', [PedidosController::class, 'pedidosCliente'] )->name('pedidos.cliente');
+    Route::post('pedidos/save', [PedidosController::class, 'save'] )->name('pedidos.save');
+    Route::get('pedidos/listar', [PedidosController::class, 'pedidosClienteListar'] )->name('pedidos.cliente.listar');
     Route::get('categorias', [ProductoCategoriasController::class, 'listarCategoriasActivas'])->name('categorias');
+    Route::get('cart/save', [ClientesController::class, 'actualizarCarrito'])->name('cart.update');
+    Route::get('cart/remove', [ClientesController::class, 'removeProductoCarrito'])->name('cart.remove');
+    Route::get('cart/listar', [ClientesController::class, 'listarCarrito'])->name('cart.listar');
+    Route::get('cart/agrupado', [ClientesController::class, 'agruparCarritoClienteProveedor'])->name('cart.agrupar');
+
+    Route::get('compras', [ClientesController::class, 'compras'])->name('compras');
+
+    
 
 });
 

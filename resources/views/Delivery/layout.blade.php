@@ -56,7 +56,7 @@
             <div class="row">
                 <div class="col-lg-3 col-sm-4 col-md-3 col-xs-7 col-ts-12 header-element">
                     <div class="logo">
-                        <a href="index.html">
+                        <a href="{{route('home')}}">
                             <img src="{{asset('Delivery/assets/images/comida-med.png')}}" alt="logo">
                         </a>
                     </div>
@@ -211,7 +211,7 @@
                                 </div>
                                 <div class="card-options-usuario">
                                     <ul>
-                                        <li><a href="#">Cerrar sesión</a></li>
+                                        <li><a href="{{route('logauth')}}">Cerrar sesión</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -255,13 +255,13 @@
                                 <a title="Interior" href="{{route('home')}}" class="tanajil-menu-item-title">Inicio</a>
                             </li>
                             <li class="menu-item">
-                                <a title="Lighting" href="#" class="tanajil-menu-item-title">Carrito</a>
+                                <a title="Lighting" href="{{route('cart')}}" class="tanajil-menu-item-title">Carrito</a>
                             </li>
                             <li class="menu-item">
-                                <a title="Wheels" href="#" class="tanajil-menu-item-title">Pedidos</a>
+                                <a title="Wheels" href="{{route('compras')}}" class="tanajil-menu-item-title">Pedidos</a>
                             </li>
                             <li class="menu-item">
-                                <a title="Exterior" href="#" class="tanajil-menu-item-title">Cerrar sesión</a>
+                                <a title="Exterior" href="{{route('logauth')}}" class="tanajil-menu-item-title">Cerrar sesión</a>
                             </li>
                         </ul>
                     </div>
@@ -293,9 +293,9 @@
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </a>
                 <div class="header-searchform-box">
-                    <form class="header-searchform" id="input-search" method="POST" action="{{route('productos')}}">
+                    <form class="header-searchform" id="input-search" method="GET" action="{{route('productos')}}">
                         <div class="searchform-wrap">
-                            <input type="text" class="search-input" placeholder="Ej. Papitas">
+                            <input name="termino" type="text" class="search-input" placeholder="Ej. Papitas">
                             <input type="submit" class="submit button" value="Buscar">
                         </div>
                     </form>
@@ -470,20 +470,22 @@
             </a>
         </div>
         <div class="footer-device-mobile-item device-home device-cart">
-            <a href="#">
+            <a href="{{route('cart')}}">
 					<span class="icon">
 						<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-						<span class="count-icon">0</span>
+                        @isset($user)
+						<span id="contador_carrito" class="count-icon">{{$dataCli->CarritoItems}}</span>
+                        @endisset
 					</span>
                 <span class="text">Carrito</span>
             </a>
         </div>
         <div class="footer-device-mobile-item device-home device-user">
-            <a href="login.html">
+            <a href="{{route('compras')}}">
 					<span class="icon">
 						<i class="fa fa-shopping-bag" aria-hidden="true"></i>
 					</span>
-                Pedidos
+                Compras
             </a>
         </div>
     </div>
@@ -553,6 +555,18 @@
                    if($('#row-categos'.length)){
                         dibujarCategorias(res);
                    }
+
+                   if($('#tb-cart').length){
+                        listarcart();
+                   }
+
+                   if($('#contenido-carrito').length){
+                        listarContenidoCarritoCheckout();
+                   }
+
+                   if($('#lst-compras').length){
+                        ListarCompras();
+                   }
                 }
             });
         }
@@ -560,7 +574,7 @@
         function fillMenuCategos(data){
                 $.each(data, function (i, val) { 
                     $('#menu-categos').append(`<li class="menu-item">
-                                                    <a title="Audio" href="#" class="tanajil-item-title">${val.nombre}</a>
+                                                    <a title="Audio" href="{{route('productos')}}?categoria=${val.id}" class="tanajil-item-title">${val.nombre}</a>
                                                 </li>`)
                 });
         }
@@ -588,6 +602,325 @@
             });
            
         }
+
+        @isset($user)            
+        
+            function addcart(proid, cant){
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('cart.update')}}",
+                    data: {clienteId: {{$dataCli->ClienteId}}, productoId:proid, cantidad:cant},
+                    dataType: "json",
+                    success: function (res) {
+                        swal({
+                                icon: "success",
+                                title: "¡Excelente!",
+                                text: "Se ha agregado el producto a tu carrito.",
+                            }).then(()=>{
+                                console.log(res)
+                                //refrescar el numero de abajo del cart
+                                $("#contador_carrito").text(res.productos)
+                            });
+                        
+                    }
+                });
+            }
+
+            function removecart(proid){
+                swal({
+                    icon: "warning",
+                    title: "¡Advertencia!",
+                    text: "¿Desea remover el producto de su carrito de compras?",
+                    buttons:true,
+                    dangerMode:true
+                }).then((result)=>{
+                    if(result){
+                        $.ajax({
+                            type: "GET",
+                            url: "{{route('cart.remove')}}",
+                            data: {clienteId: {{$dataCli->ClienteId}}, productoId:proid},
+                            dataType: "json",
+                            success: function (res) {
+                                swal({
+                                        icon: "success",
+                                        title: "¡Excelente!",
+                                        text: "Se ha removido el producto de tu carrito.",
+                                    }).then(()=>{
+                                        listarcart();
+                                    });
+                                
+                            }
+                        });
+                    }
+                })
+                
+            }
+
+            function listarcart(){
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('cart.listar')}}",
+                    data: {clienteId:{{$dataCli->ClienteId}}},
+                    dataType: "json",
+                    success: function (res) {
+                        $('#tb-cart tbody').empty();
+                        let total = 0;
+                        let item = 0;
+                        $.each(res, function (i, val) { 
+                            item++;
+                            $('#tb-cart tbody').append(`<tr class="cart_item">
+                                <td class="product-remove">
+                                    <button onclick="removecart(${val.productoId})" class="remove"><i class="fa fa-trash"></i></button>
+                                </td>
+                                <td class="product-thumbnail">
+                                
+                                        <img src="{{asset('Admin/assets/images/productos')}}/${val.imagen=="default.png"?"default.png":(val.proveedorId+"/"+val.imagen)}" alt="img"
+                                            class="attachment-shop_thumbnail size-shop_thumbnail wp-post-image">
+                                
+                                </td>
+                                <td class="product-name" data-title="Product">
+                                    <a href="#" class="title">${val.nombre}</a>
+                                    <span class="attributes-select attributes-color">${val.proveedor}</span>
+                                </td>
+                                <td class="product-quantity" data-title="Quantity">
+                                    <div class="quantity">
+                                        <div class="control">
+                                            <a class="btn-number qtyminus quantity-minus" href="#">-</a>
+                                            <input type="text" data-step="1" data-min="0" value="${val.cantidad}" title="Qty"
+                                                class="input-qty qty" size="4">
+                                            <a href="#" class="btn-number qtyplus quantity-plus">+</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="product-price" data-title="Price">
+                                            <span class="woocommerce-Price-amount amount">
+                                                <span class="woocommerce-Price-currencySymbol">
+                                                    $
+                                                </span>
+                                                ${val.precio}
+                                            </span>
+                                </td>
+                            </tr>`)
+
+                            total += (val.cantidad * val.precio);
+                        });
+
+                        $('#tb-cart tbody').append(`    
+                            <tr>
+                                <td class="actions">                                            
+                                    <div class="order-total">
+                                                <span class="title">
+                                                    Total:
+                                                </span>
+                                        <span class="total-price">
+                                                    $ ${total.toFixed(2)}
+                                                </span>
+                                    </div>
+                                </td>
+                            </tr>`);
+
+                      $("#contador_carrito").text(item)
+
+                
+                    }
+                });
+            }
+
+
+
+
+            function listarContenidoCarritoCheckout(){
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('cart.agrupar')}}",
+                    data: { clienteId:{{$dataCli->ClienteId}} },
+                    dataType: "json",
+                    success: function (res) {
+                        let totalGlobal = 0;
+                        $.each(res, function (i, prov) { 
+                            let htmlproductos = "";                          
+                            let totalProveedor = 0;
+                             $.each(prov, function (j, val) { 
+
+                               htmlproductos +=  `<li class="product-item-order">
+                                                    <div class="product-thumb">
+                                                        <a href="#">
+                                                            <img src="{{asset('Admin/assets/images/productos')}}/${val.imagen=='default.png'?'default.png': val.proveedorId+"/"+val.imagen}" alt="img">
+                                                        </a>
+                                                    </div>
+                                                    <div class="product-order-inner">
+                                                        <h5 class="product-name">
+                                                            <a href="#">${val.nombre}</a>
+                                                        </h5>                                                        
+                                                        <div class="price">
+                                                            $${val.precio}
+                                                            <span class="count">x${val.cantidad}</span>
+                                                        </div>
+                                                    </div>
+                                                </li> `;  
+                                                
+                                totalProveedor+= (val.precio * val.cantidad)
+                                 
+                             });
+
+
+                             $('#contenido-carrito').append(`    
+                                    <div class="row-col-2 row-col">
+                                    <div class="your-order">
+                                        <h3 class="title-form">
+                                            Proveedor: ${i}
+                                        </h3>
+                                        <ul class="list-product-order">
+                                           ${htmlproductos}                                             
+                                        </ul>
+                                        <div class="order-total">
+                                                <span class="title">
+                                                    Monto ($) proveedor:
+                                                </span>
+                                            <span class="total-price">
+                                                    $ ${totalProveedor.toFixed(2)}
+                                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                `);
+
+                            totalGlobal += totalProveedor;
+
+                        });
+
+
+
+                        $('#contenido-carrito').append(`
+                                                        <div class="row-col-2 row-col">
+                                                            <div class="your-order">
+                                                                <h3 class="title-form">
+                                                                    Total a pagar($):
+                                                                </h3>                                                              
+                                                                <div class="order-total">
+                                                                    <span class="total-price">
+                                                                        $ ${totalGlobal.toFixed(2)}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        `); 
+
+
+                        $('#clienteNombre').val("{{$dataCli->NombreCliente}}")
+
+                        
+
+                    }
+                });
+            }
+
+
+
+            function GenerarPedido(){
+
+                const puntoEntrega = $('#puntoEntrega').val();
+                let formdata = new FormData();
+                formdata.append('puntoEntrega', puntoEntrega);
+                formdata.append('clienteId', {{$dataCli->ClienteId}})
+                $.ajax({
+                    method: "POST",
+                    url: "{{route('pedidos.save')}}",
+                    data: formdata,                   
+                    contentType: false,
+                    cache:false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (res) {
+                        console.log(res)
+                        let tipo = "";
+                        let titulo = "";
+                        let msj = "";
+
+                        if(res.status === 200){
+                            tipo = "success";
+                            titulo = "¡Exito!"
+                            msj = "Se han generado los pedidos "+(res.folios.join(', '))+"."
+                        }else if(res.status === 500){
+                            tipo = "error";
+                            titulo = "¡Oh no!"
+                            msj = "Ha ocurrido un error al tratar de realizar la operación. Intentalo nuevamente."
+                        }else if(res.status === 117){
+                            tipo = "info";
+                            titulo = "¡Ojo O.o!"
+                            msj = res.msj
+                        }
+                        else{
+                            tipo = "warning";
+                            titulo = "¡Advertencia!"
+                            msj = "Verifica tu información e intentalo nuevamente."
+                            
+                        }
+
+                        swal({
+                                icon: tipo,
+                                title: titulo,
+                                text: msj,
+                            }).then(()=>{
+                                console.log("dentro: "+res.status)
+                                if(res.status === 200){
+                                    //redirect
+                                    window.location.href = "{{route('compras')}}";
+                                }else if(res.status === 422){
+                                    LimpiarValidaciones();
+                                    $.each(res.errors, function (i, val) { 
+                                        setError(i, val);
+                                    });
+                                }else if(res.status === 117){
+                                    window.location.href = "{{route('productos')}}";
+                                }
+                            
+                            });
+                        
+                    }
+                });
+            }
+
+
+            function ListarCompras(){
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('pedidos.cliente.listar')}}",
+                    data: {clienteId:{{$dataCli->ClienteId}}},
+                    dataType: "json",
+                    success: function (res) { 
+                        
+                        console.log(res)
+                        
+                        $.each(res, function (i, val) { 
+                            $('#lst-compras').append(`
+                                    <li class="product-item-order">
+                                            <div class="product-thumb" style="text-align:center;">
+                                                <a href="#">
+                                                    <img style="width:180px; height:180px;" src="{{asset('Admin/assets/images/proveedores/default.png')}}" alt="img">
+                                                </a>
+                                            </div>
+                                            <div class="product-order-inner">
+                                                <p>Folio: <b>${val.Folio}</b></p>
+                                                <p>Proveedor: <b>${val.RazonSocial}</b></p>
+                                                <p>Fecha emisión: <b>${val.FechaEmision}</b></p>
+                                                <p>Estado: <b>${val.Estado}</b></p>
+                                                <div class="price">
+                                                    Total del pedido: $ ${val.TotalPedido}                                             
+                                                </div>
+                                            </div>
+                                        </li>`
+                                );
+                        });
+
+                       
+
+
+                    }
+                });
+            }
+
+        @endisset
 
 
     </script>

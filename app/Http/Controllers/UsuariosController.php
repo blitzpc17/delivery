@@ -167,10 +167,11 @@ class UsuariosController extends Controller
 
                 $r->session()->regenerate(); 
                 $user = User::where('email', $r->email)->first();
-                if($user->roles_id==3){
+                if($user->rol_id==3){
                     return redirect()->route('home');
-                }
-                return redirect()->intended('admin/home');
+                }else{
+                    return redirect()->intended('admin/home');
+                }                
                
             }           
 
@@ -187,9 +188,16 @@ class UsuariosController extends Controller
     }
 
     public function logauth(Request $r){        
+        $user = Auth::user();
+        $ruta = "";
+        if($user->rol_id==3){
+            $ruta = "login";
+        }else{
+            $ruta = "admin.login";
+        }
         Auth::logout();
         Session::flush();
-        return redirect()->route('admin.login');
+        return redirect()->route($ruta);
     }
 
     public function save(Request $r){

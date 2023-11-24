@@ -154,7 +154,7 @@ class ProductosController extends Controller
 
     public function busquedaProductos(Request $r){
         if($r->termino ==null){
-            return response()->json(["status" => 402, "errors"=>["busqueda"=>["No se agrego término a la b´squeda."]]]);
+            return response()->json(["status" => 402, "errors"=>["busqueda"=>["No se agrego término a la búsqueda."]]]);
         }else if($r->categoria!=null && $r->proveedor==null){
             //solo por categoria y termino
             return Producto::where('termino', 'like', "%".$r->termino."%" )->where('producto_categorias_id', $r->categoria)->get();
@@ -172,10 +172,12 @@ class ProductosController extends Controller
         $dataCli = Cliente::ObtenerDataCliente($user->id);  
         $productos = null;
 
-        if($r->categoria==null&& $r->termino==null){
-            $productos = Producto::where('estado_id', '<>', 3)->get();
+        if($r->categoria==null&& $r->termino!=null){
+            $productos = Producto::where('estado_id', '<>', 3)->where('nombre', 'like', '%'.$r->termino.'%')->get();
         }else if($r->categoria!=null&& $r->termino==null){
-            $productos = Producto::where('producto_categorias_id', $r->categoria)->get();
+            $productos = Producto::where('estado_id', '<>', 3)->where('producto_categorias_id', $r->categoria)->get();
+        }else{
+            $productos = Producto::where('estado_id', '<>', 3)->get();
         }
 
         return view('Delivery.Pages.productos', compact('user', 'dataCli', 'productos'));
