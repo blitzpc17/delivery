@@ -248,7 +248,7 @@
         var new_parent_panel_id = $(target_id).attr('data-parent-panel');
         if ( typeof new_parent_panel_id == 'undefined' || typeof new_parent_panel_id == false ) {
             $('.tanajil-menu-panels-actions-wrap .tanajil-menu-prev-panel').remove();
-            $('.tanajil-menu-panels-actions-wrap .tanajil-menu-current-panel-title').html('MAIN MENU');
+            $('.tanajil-menu-panels-actions-wrap .tanajil-menu-current-panel-title').html('MENÚ');
         }
         else {
             $('.tanajil-menu-panels-actions-wrap .tanajil-menu-prev-panel').attr('href', '#' + new_parent_panel_id).attr('data-cur-panel', target_id).attr('data-target', '#' + new_parent_panel_id);

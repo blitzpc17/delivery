@@ -41,12 +41,16 @@
 
                                             <p class="form-row form-row-wide">
 												<label class="text">Fecha nacimiento:</label>
-												<input title="fechaNacimiento" type="text" name="fechaNacimiento" id="fechaNacimiento" class="input-text">
+												<input title="fechaNacimiento" type="date" name="fechaNacimiento" id="fechaNacimiento" class="form-control">
 											</p>
 
                                             <p class="form-row form-row-wide">
 												<label class="text">Sexo:</label>
-												<input title="sexo" type="text" name="sexo" id="sexo" class="input-text">
+												<select title="sexo" type="text" name="sexo" id="sexo" class="form-control">
+                                                    <option>Seleccione una opción</option>
+                                                    <option value="M">Masculino</option>
+                                                    <option value="F">Femenino</option>
+                                                </select>
 											</p>
 
                                             <p class="form-row form-row-wide">

@@ -81,7 +81,7 @@ class UsuariosController extends Controller
             $dataPersona = array(
                 "nombres" => $r->nombres,
                 "apellidos" => $r->apellidos,
-                "fecha_nacimiento" => $r->fechaNacimiento,
+                "fecha_nacimiento" => date('Y-m-d', strtotime(str_replace('-', '/', $r->fechaNacimiento))),
                 "sexo" => $r->sexo                
             );
             $result = Persona::create($dataPersona);

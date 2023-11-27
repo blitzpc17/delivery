@@ -33,7 +33,7 @@
 @stack('css')
 
 </head>
-<body class="home">
+<body class="home" style="background:#BBDEFB;">
 <header class="header style7">
     <div class="top-bar">
         <div class="container">
@@ -75,154 +75,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-2 col-sm-12 col-md-3 col-xs-12 col-ts-12">
-                    <div class="header-control">
-                        <div class="block-minicart tanajil-mini-cart block-header tanajil-dropdown">
-                            <a href="javascript:void(0);" class="shopcart-icon" data-tanajil="tanajil-dropdown">
-                                Cart
-                                <span class="count">
-										0
-										</span>
-                            </a>
-                            <!-- shopcart-->
-                            <div class="shopcart-description tanajil-submenu">
-                                <div class="content-wrap">
-                                    <h3 class="title">Shopping Cart</h3>
-                                    <ul class="minicart-items">
-                                        <li class="product-cart mini_cart_item">
-                                            <a href="#" class="product-media">
-                                                <img src="assets/images/item-minicart-1.jpg" alt="img">
-                                            </a>
-                                            <div class="product-details">
-                                                <h5 class="product-name">
-                                                    <a href="#">Wheel With Inserts</a>
-                                                </h5>
-                                                <div class="variations">
-															<span class="attribute_color">
-																<a href="#">Black</a>
-															</span>
-                                                    ,
-                                                    <span class="attribute_size">
-																<a href="#">300ml</a>
-															</span>
-                                                </div>
-                                                <span class="product-price">
-															<span class="price">
-																<span>$45</span>
-															</span>
-														</span>
-                                                <span class="product-quantity">
-															(x1)
-														</span>
-                                                <div class="product-remove">
-                                                    <a href=""><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="product-cart mini_cart_item">
-                                            <a href="#" class="product-media">
-                                                <img src="assets/images/item-minicart-2.jpg" alt="img">
-                                            </a>
-                                            <div class="product-details">
-                                                <h5 class="product-name">
-                                                    <a href="#">Soap Wheels Solutions</a>
-                                                </h5>
-                                                <div class="variations">
-															<span class="attribute_color">
-																<a href="#">Black</a>
-															</span>
-                                                    ,
-                                                    <span class="attribute_size">
-																<a href="#">300ml</a>
-															</span>
-                                                </div>
-                                                <span class="product-price">
-															<span class="price">
-																<span>$45</span>
-															</span>
-														</span>
-                                                <span class="product-quantity">
-															(x1)
-														</span>
-                                                <div class="product-remove">
-                                                    <a href=""><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="product-cart mini_cart_item">
-                                            <a href="#" class="product-media">
-                                                <img src="assets/images/item-minicart-3.jpg" alt="img">
-                                            </a>
-                                            <div class="product-details">
-                                                <h5 class="product-name">
-                                                    <a href="#">Wheels Solutions Soap</a>
-                                                </h5>
-                                                <div class="variations">
-															<span class="attribute_color">
-																<a href="#">Black</a>
-															</span>
-                                                    ,
-                                                    <span class="attribute_size">
-																<a href="#">300ml</a>
-															</span>
-                                                </div>
-                                                <span class="product-price">
-															<span class="price">
-																<span>$45</span>
-															</span>
-														</span>
-                                                <span class="product-quantity">
-															(x1)
-														</span>
-                                                <div class="product-remove">
-                                                    <a href=""><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div class="subtotal">
-                                        <span class="total-title">Subtotal: </span>
-                                        <span class="total-price">
-													<span class="Price-amount">
-														$135
-													</span>
-												</span>
-                                    </div>
-                                    <div class="actions">
-                                        <a class="button button-viewcart" href="shoppingcart.html">
-                                            <span>View Bag</span>
-                                        </a>
-                                        <a href="checkout.html" class="button button-checkout">
-                                            <span>Checkout</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end shopcart-->
-                        </div>
-                        <div class="block-account block-header tanajil-dropdown">
-                            <a href="javascript:void(0);" data-tanajil="tanajil-dropdown">
-                                <span class="flaticon-user"></span>
-                            </a>
-                            <div class="header-account tanajil-submenu">
-                                <div class="card-header-data-usuario">
-                                    <img src="{{asset('Delivery/assets/images/')}}" alt="img-user">
-                                    <p>Nombre cliente</p>
-                                </div>
-                                <div class="card-options-usuario">
-                                    <ul>
-                                        <li><a href="{{route('logauth')}}">Cerrar sesión</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <a class="menu-bar mobile-navigation menu-toggle" href="#">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </a>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -243,9 +96,9 @@
                         <ul class="tanajil-nav-vertical vertical-menu tanajil-clone-mobile-menu">
                            
                             <li class="menu-item menu-item-has-children">
-                                <a title="Accessories" href="#" class="tanajil-menu-item-title">Categorías</a>
+                                <a title="Categorías" href="#" class="tanajil-menu-item-title">Categorías</a>
                                 <span class="toggle-submenu"></span>
-                                <ul id="menu-categos" role="menu" class=" submenu">
+                                <ul id="menu-categos" role="menu" class="submenu">
                                     <!-- <li class="menu-item">
                                         <a title="Audio" href="#" class="tanajil-item-title">Audio</a>
                                     </li>-->                                    

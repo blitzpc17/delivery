@@ -14,7 +14,6 @@
         height:120px;
     }
 
-
 </style>
 @endpush
 
@@ -31,7 +30,7 @@
 							<div class="row">
 
 								<div class="col-lg-6 col-md-6 col-sm-12">
-									<div class="login-item">
+									<div  style="background:#64B5F6; box-shadow:5px 5px rgba(0,0,0,0.25); border-radius:15px;" class="login-item">
 										<h5 class="title-login">Iniciar sesión</h5>
 										<form class="login" method="POST" action="{{route('auth')}}">
                                             @csrf

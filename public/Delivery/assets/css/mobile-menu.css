@@ -20,6 +20,7 @@
 }
 .tanajil-menu-clone-wrap.open {
     left: 0;
+    background: #bdbdbd;
 }
 .tanajil-menu-panels-actions-wrap {
     border-bottom: 1px solid #eee;
@@ -109,8 +110,8 @@
     height: calc(100% - 50px);
     position: relative;
 }
-.tanajil-menu-clone-wrap .tanajil-menu-panel {
-    background-color: #fff;
+.tanajil-menu-clone-wrap .tanajil-menu-panel {    
+    background: #eee;
 }
 .tanajil-menu-clone-wrap .tanajil-menu-panel.tanajil-menu-sub-panel {
     border-color: #fff;
