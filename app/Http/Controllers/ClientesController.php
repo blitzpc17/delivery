@@ -27,14 +27,16 @@ class ClientesController extends Controller
 
     public function index(){
         $user = Auth::user();
+        $categorias = ProductoCategoria::wherenull('baja')->orwhere('baja', 0)->get();
         $dataCli = Cliente::ObtenerDataCliente($user->id);  
-        return view('Delivery.Pages.home', compact('user', 'dataCli'));
+        return view('Delivery.Pages.home', compact('user', 'dataCli', 'categorias'));
     }
 
     public function cart(){
         $user = Auth::user();
+        $categorias = ProductoCategoria::wherenull('baja')->orwhere('baja', 0)->get();
         $dataCli = Cliente::ObtenerDataCliente($user->id);  
-        return view('Delivery.Pages.cart', compact('user', 'dataCli'));
+        return view('Delivery.Pages.cart', compact('user', 'dataCli', 'categorias'));
     }
 
     public function actualizarCarrito(Request $r){
@@ -97,8 +99,9 @@ class ClientesController extends Controller
 
     public function compras(){
         $user = Auth::user();
+        $categorias = ProductoCategoria::wherenull('baja')->orwhere('baja', 0)->get();
         $dataCli = Cliente::ObtenerDataCliente($user->id);  
-        return view('Delivery.Pages.compras', compact('user', 'dataCli'));
+        return view('Delivery.Pages.compras', compact('user', 'dataCli', 'categorias'));
     }
 
 

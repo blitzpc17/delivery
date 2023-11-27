@@ -170,6 +170,7 @@ class ProductosController extends Controller
 
         $user = Auth::user();
         $dataCli = Cliente::ObtenerDataCliente($user->id);  
+        $categorias = ProductoCategoria::wherenull('baja')->orwhere('baja', 0)->get();
         $productos = null;
 
         if($r->categoria==null&& $r->termino!=null){
@@ -180,7 +181,7 @@ class ProductosController extends Controller
             $productos = Producto::where('estado_id', '<>', 3)->get();
         }
 
-        return view('Delivery.Pages.productos', compact('user', 'dataCli', 'productos'));
+        return view('Delivery.Pages.productos', compact('user', 'dataCli', 'productos', 'categorias'));
     }
 
 

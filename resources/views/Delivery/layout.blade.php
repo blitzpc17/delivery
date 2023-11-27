@@ -101,7 +101,15 @@
                                 <ul id="menu-categos" role="menu" class="submenu">
                                     <!-- <li class="menu-item">
                                         <a title="Audio" href="#" class="tanajil-item-title">Audio</a>
-                                    </li>-->                                    
+                                    </li>-->                                 
+
+                                    @isset($user)
+                                        @foreach ($categorias as $cat)
+                                            <li class="menu-item">
+                                                <a href="{{route('productos')}}?categoria={{$cat->id}}" class="tanajil-item-title">{{$cat->nombre}}</a>
+                                            </li>
+                                        @endforeach 
+                                    @endisset                              
                                 </ul>
                             </li>
                             <li class="menu-item">
@@ -403,7 +411,7 @@
                 dataType: "json",
                 success: function (res) {                    
                    categorias = res;
-                   fillMenuCategos(res);
+                  // fillMenuCategos(res);
 
                    if($('#row-categos'.length)){
                         dibujarCategorias(res);

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Cliente;
 use App\Models\Venta;
 use App\Models\VentaPartida;
+use App\Models\ProductoCategoria;
 
 
 class PedidosController extends Controller
@@ -18,8 +19,8 @@ class PedidosController extends Controller
     public function checkout(Request $r){
         $user = Auth::user();
         $dataCli = Cliente::ObtenerDataCliente($user->id);  
-
-        return view('Delivery.Pages.checkout', compact('user', 'dataCli'));
+        $categorias = ProductoCategoria::wherenull('baja')->orwhere('baja', 0)->get();
+        return view('Delivery.Pages.checkout', compact('user', 'dataCli', 'categorias'));
     }
 
     public function comprasCliente(Request $r){
