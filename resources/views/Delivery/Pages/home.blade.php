@@ -7,7 +7,7 @@
 <div>
     <div class="fullwidth-template">
 
-        <div class="banner-wrapp">
+        <div class="banner-wrapp" style="margin-bottom: 5rem;">
             <div class="container">
                 <div id="row-categos" class="row">
                     
